@@ -72,17 +72,20 @@ bot = commands.Bot(("translate!", "tr!"), case_insensitive=True, help_command=No
 async def ping(ctx):
     await ctx.send(f":ping_pong: Pong! {round(bot.latency*100, 2)}ms")
 
-@bot.command(name="add-channel")
-async def addchan(ctx, channel: discord.Channel):
+
+@bot.command(name="addchannel")
+async def add_translate_channel(ctx, channel: discord.Channel):
     translate_channels.append(channel.id)
     await ctx.send(f'Added <#{channel.id}>!')
 
-@bot.command(name="channels")
-async def channels(ctx):
+
+@bot.command(name="translatechannels")
+async def display_translate_channels(ctx):
     await ctx.send(translate_channels)
-    
-@bot.command(name="remove")
-async def del(ctx, args):
+
+
+@bot.command(name="removechannels")
+async def remove_translate_channel(ctx, args):
     if args in translate_channels:
         translate_channels.remove(args)
         await ctx.send("Removed!")
