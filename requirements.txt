@@ -1,1 +1,2 @@
 discord~=1.7.3
+translate~=3.5.0
