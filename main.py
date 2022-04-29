@@ -72,7 +72,29 @@ bot = commands.Bot(("translate!", "tr!"), case_insensitive=True, help_command=No
 async def ping(ctx):
     await ctx.send(f":ping_pong: Pong! {round(bot.latency*100, 2)}ms")
 
+@bot.command(name="add-channel")
+async def addchan(ctx, channel: discord.Channel):
+    translate_channels.append(channel.id)
+    await ctx.send(f'Added <#{channel.id}>!')
 
+@bot.command(name="channels")
+async def channels(ctx):
+    await ctx.send(translate_channels)
+    
+@bot.command(name="remove")
+async def del(ctx, args):
+    if args in translate_channels:
+        translate_channels.remove(args)
+        await ctx.send("Removed!")
+    try:
+        x = int(args)
+        if x < len(translate_channels):
+            translate_channels.pop(x)
+            await ctx.send("Removed!")
+    except ValueError as e:
+        print(e)
+        await ctx.send("Error!")
+        
 @bot.event
 async def on_message(ctx):
     if ctx.author.id == BOT_ID:  # Ignore the bot's own messages
