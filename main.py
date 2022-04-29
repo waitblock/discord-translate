@@ -3,8 +3,7 @@ from discord.ext import commands
 from translate import Translator
 
 
-# Configuration variables:
-BOT_ID = 969008594097930331  # The ID of your translate bot
+# Configuration variable(s):
 TRANSLATE_LANGUAGE_CODE = "zh"  # This is the ISO 639-1 two letter language code that the bot will translate to
 
 
@@ -100,7 +99,7 @@ async def remove_translate_channel(ctx, args):
         
 @bot.event
 async def on_message(ctx):
-    if ctx.author.id == BOT_ID:  # Ignore the bot's own messages
+    if ctx.author == bot.user:  # Ignore the bot's own messages
         return
     if ctx.channel.id in translate_channels:
         original_message = ctx.content
