@@ -236,3 +236,6 @@ fabric.properties
 # Project specific files
 TOKEN
 channels.txt
+
+# Ignore macOS Finder files
+.DS_Store
