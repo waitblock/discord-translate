@@ -4,7 +4,7 @@ from translate import Translator
 
 
 # Configuration variable(s):
-TRANSLATE_LANGUAGE_CODE = "zh"  # This is the ISO 639-1 two letter language code that the bot will translate to
+TRANSLATE_LANGUAGE_CODE = ""  # This is the ISO 639-1 two letter language code that the bot will translate to
 
 
 # Print bot information
@@ -96,6 +96,13 @@ async def remove_translate_channel(ctx, args):
     except ValueError as e:
         print(e)
         await ctx.send("Error!")
+ 
+
+@bot.command(name="translate")
+async def translate(ctx, args1, args2, *):
+    TRANSLATE_LANGUAGE_CODE = args1
+    await ctx.send(translator)
+
         
 @bot.event
 async def on_message(ctx):
