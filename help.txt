@@ -7,5 +7,6 @@ Commands:
 
 help: Display this help (args: None)
 ping: Check bot latency (args: None)
+shutdown: Shutdown the bot (args: None) (This command can only be used by the bot owner.)
 translatechannels: Display the channels that are currently being translated (args: None)
 ```
