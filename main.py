@@ -5,6 +5,7 @@ from translate import Translator
 
 # Configuration variable(s):
 TRANSLATE_LANGUAGE_CODE = "zh"  # This is the ISO 639-1 two letter language code that the bot will translate to
+BOT_ID = 969008594097930331  # This is the user ID of your bot
 
 
 # Print bot information
@@ -79,15 +80,17 @@ async def display_translate_channels(ctx):
 
 @bot.event
 async def on_message(ctx):
-    if ctx.author == bot.user:  # Ignore the bot's own messages
+    if ctx.author.id == BOT_ID:  # Ignore the bot's own messages
         return
     if ctx.channel.id in translate_channels:
         original_message = ctx.content
+        if original_message[0:3] == "tr!" or original_message[0:10] == "translate!":
+            await bot.process_commands(ctx)
+            return
         translated_message = translator.translate(original_message)
         output = f"{original_message} (English) -> ({TRANSLATE_LANGUAGE_NAME}) {translated_message}"
         await ctx.reply(output, mention_author=False)
         print(output)
-    await bot.process_commands(ctx)
 
 
 @bot.event
