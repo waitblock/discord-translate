@@ -48,13 +48,16 @@ print("Channel(s) that will be translated (The channel ID(s) are shown):")
 for channel in translate_channels:
     print(channel)
 
-if TRANSLATE_LANGUAGE_CODE not in language_codes:
+if TRANSLATE_LANGUAGE_CODE not in language_codes:  # Check if language code is valid
     print("The given language code in the configuration variable 'TRANSLATE_LANGUAGE' is an invalid ISO 639-1 two-letter language code.")
     print("Please enter a valid ISO 639-1 two-letter language code and try again.")
     exit()
 
 TRANSLATE_LANGUAGE_NAME = language_names[language_codes.index(TRANSLATE_LANGUAGE_CODE)]  # Name of language being translated to
 print(f"Configured to translate from English to {TRANSLATE_LANGUAGE_NAME}.")
+
+with open("help.txt", "r") as help_file:  # Put the help text into a variable so it doesn't have to read again
+    HELP_TEXT = help_file.read()
 
 
 translator = Translator(to_lang=TRANSLATE_LANGUAGE_CODE)
@@ -66,6 +69,11 @@ intents.messages = True
 
 
 bot = commands.Bot(("translate!", "tr!"), case_insensitive=True, help_command=None, intents=intents)
+
+
+@bot.command(name="help")
+async def print_help(ctx):
+    await ctx.send(HELP_TEXT)
 
 
 @bot.command(name="ping")

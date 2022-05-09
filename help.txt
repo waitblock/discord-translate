@@ -1,0 +1,11 @@
+```
+Prefixes: 'translate!', 'tr!'
+------------------------------------------------
+Invocation Example: [prefix][command] [args]
+------------------------------------------------
+Commands:
+
+help: Display this help (args: None)
+ping: Check bot latency (args: None)
+translatechannels: Display the channels that are currently being translated (args: None)
+```
