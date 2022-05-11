@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from translate import Translator
+import requests
 
 # Configuration variable(s):
 TRANSLATE_LANGUAGE_CODE = "zh"  # This is the ISO 639-1 two letter language code that the bot will translate to
@@ -54,10 +54,13 @@ TRANSLATE_LANGUAGE_NAME = language_names[
     language_codes.index(TRANSLATE_LANGUAGE_CODE)]  # Name of language being translated to
 print(f"Configured to translate from English to {TRANSLATE_LANGUAGE_NAME}.")
 
+API_POST_HEADERS = {
+    "accept": "application/json"
+}
+API_TRANSLATE_URL = "https://translate.argosopentech.com/translate"
+
 with open("help.txt", "r") as help_file:  # Put the help text into a variable so it doesn't have to be read again
     HELP_TEXT = help_file.read()
-
-translator = Translator(to_lang=TRANSLATE_LANGUAGE_CODE)
 
 # Enable the 'messages' intent
 intents = discord.Intents.default()
@@ -108,7 +111,13 @@ async def on_message(ctx):
         if original_message[0:3] == "tr!" or original_message[0:10] == "translate!":
             await bot.process_commands(ctx)
             return
-        translated_message = translator.translate(original_message)
+        request_data = {
+            "q": original_message,
+            "source": "en",
+            "target": TRANSLATE_LANGUAGE_CODE
+        }
+        response = requests.post(API_TRANSLATE_URL, headers=API_POST_HEADERS, data=request_data)
+        translated_message = response.json()['translatedText']
         output = f"{original_message} (English) -> ({TRANSLATE_LANGUAGE_NAME}) {translated_message}"
         await ctx.reply(output, mention_author=False)
         print(output)
