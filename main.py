@@ -3,9 +3,11 @@ from discord.ext import commands
 import requests
 
 # Configuration variable(s):
-TRANSLATE_LANGUAGE_CODE = "zh"  # This is the ISO 639-1 two letter language code that the bot will translate to
+TRANSLATE_LANGUAGE_CODE = "fr"  # This is the ISO 639-1 two letter language code that the bot will translate to
 BOT_ID = 969008594097930331  # This is the user ID of your bot
 OWNER_ID = 785591018342580254  # This is the user ID of the owner of the bot
+PINGS_FOR_API_ERRORS = False  # If you want to be pinged when an API error occurs, set this to True
+SEND_API_ERRORS = False  # If you want the bot to send error messages from the translation API, set this to True
 
 # Print bot information
 print("Discord Translate v0.0.1")
@@ -44,6 +46,7 @@ print("Channel(s) that will be translated (The channel ID(s) are shown):")
 for channel in translate_channels:
     print(channel)
 
+# TODO: Check if language is valid on the API language list
 if TRANSLATE_LANGUAGE_CODE not in language_codes:  # Check if language code is valid
     print(
         "The given language code in the configuration variable 'TRANSLATE_LANGUAGE' is an invalid ISO 639-1 two-letter language code.")
@@ -117,10 +120,19 @@ async def on_message(ctx):
             "target": TRANSLATE_LANGUAGE_CODE
         }
         response = requests.post(API_TRANSLATE_URL, headers=API_POST_HEADERS, data=request_data)
-        translated_message = response.json()['translatedText']
-        output = f"{original_message} (English) -> ({TRANSLATE_LANGUAGE_NAME}) {translated_message}"
-        await ctx.reply(output, mention_author=False)
-        print(output)
+        if response.status_code == 200:
+            translated_message = response.json()["translatedText"]
+            output = f"{original_message} (English) -> ({TRANSLATE_LANGUAGE_NAME}) {translated_message}"
+            await ctx.reply(output, mention_author=False)
+            print(output)
+        else:
+            error_message = response.json()["error"]
+            output = f"API returned with response code {response.status_code}, and with error message '{error_message}'."
+            print(output)
+            if SEND_API_ERRORS is True:
+                if PINGS_FOR_API_ERRORS is True:
+                    output += f" ||<@{OWNER_ID}>||"
+                await ctx.reply(output, mention_author=False)
 
 
 @bot.event
