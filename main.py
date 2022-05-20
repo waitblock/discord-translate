@@ -20,13 +20,13 @@ language_codes = []
 language_names = []
 
 # Read in language codes
-with open("language_codes.csv", "r") as language_codes_file:
+with open("supported_languages.csv", "r") as language_codes_file:
     language_codes_csv = language_codes_file.read().split("\n")
     for language_code_csv in language_codes_csv:
         language_codes.append(language_code_csv.split(",")[0])
         language_names.append(language_code_csv.split(",")[1])
 
-translate_channels = []  # Channels IDs that will have translations enabled.
+translate_channels = []  # The channels IDs that will have translations enabled.
 
 # Read & parse channels from channels.txt file
 try:
@@ -46,11 +46,12 @@ print("Channel(s) that will be translated (The channel ID(s) are shown):")
 for channel in translate_channels:
     print(channel)
 
-# TODO: Check if language is valid on the API language list
+
 if TRANSLATE_LANGUAGE_CODE not in language_codes:  # Check if language code is valid
     print(
-        "The given language code in the configuration variable 'TRANSLATE_LANGUAGE' is an invalid ISO 639-1 two-letter language code.")
-    print("Please enter a valid ISO 639-1 two-letter language code and try again.")
+        "The given language (by the language code) in the configuration variable 'TRANSLATE_LANGUAGE' is not a language supported by the LibreTranslate API, or is not be a valid ISO 639-1 two-letter language code.")
+    print("Please enter a supported language code / a valid ISO 639-1 two-letter language code and try again.")
+    print("See https://github.com/waitblock/discord-translate#supported-languages for a list of supported languages.")
     exit()
 
 TRANSLATE_LANGUAGE_NAME = language_names[

@@ -11,4 +11,23 @@
 
 If the bot does not seem to be working properly, please send me an issue in the 'Issues' tab of this repository.
 
+## Supported Languages
+- Arabic (ar)
+- Chinese (zh)
+- English (en)
+- French (fr)
+- German (de)
+- Hindi (hi)
+- Indonesian (id)
+- Irish (ga)
+- Italian (it)
+- Japanese (ja)
+- Korean (ko)
+- Polish (pl)
+- Portuguese (pt)
+- Russian (ru)
+- Spanish (es)
+- Turkish (tr)
+- Vietnamese (vi)
+
 <i>Disclaimer: This bot is NOT in affiliation with Discord Inc.</i>
