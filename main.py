@@ -1,13 +1,21 @@
 import discord
 from discord.ext import commands
 import requests
+import json
 
-# Configuration variable(s):
-TRANSLATE_LANGUAGE_CODE = "fr"  # This is the ISO 639-1 two letter language code that the bot will translate to
-BOT_ID = 969008594097930331  # This is the user ID of your bot
-OWNER_ID = 785591018342580254  # This is the user ID of the owner of the bot
-PINGS_FOR_API_ERRORS = False  # If you want to be pinged when an API error occurs, set this to True
-SEND_API_ERRORS = False  # If you want the bot to send error messages from the translation API, set this to True
+# Import configuration variables
+try:
+    with open("config.json", "r") as config_json_file:
+        config_json_dict = json.load(config_json_file)
+        TRANSLATE_LANGUAGE_CODE = config_json_dict["TRANSLATE_LANGUAGE_CODE"]
+        BOT_ID = config_json_dict["BOT_ID"]
+        OWNER_ID = config_json_dict["OWNER_ID"]
+        PINGS_FOR_API_ERRORS = config_json_dict["PINGS_FOR_API_ERRORS"]
+        SEND_API_ERRORS = config_json_dict["SEND_API_ERRORS"]
+        TRANSLATE_CHANNELS = config_json_dict["TRANSLATE_CHANNELS"]
+except FileNotFoundError:
+    print("Please create a file called 'config.json', and add the necessary configuration variables. See https://github.com/waitblock/discord-translate/blob/main/config.json for an example 'config.json' file.")
+    exit()
 
 # Print bot information
 print("Discord Translate v0.0.1")
@@ -26,26 +34,11 @@ with open("supported_languages.csv", "r") as language_codes_file:
         language_codes.append(language_code_csv.split(",")[0])
         language_names.append(language_code_csv.split(",")[1])
 
-translate_channels = []  # The channels IDs that will have translations enabled.
-
-# Read & parse channels from channels.txt file
-try:
-    with open("channels.txt", "r") as channels_file:
-        channels = channels_file.read().split("\n")
-        for channel in channels:
-            translate_channels.append(int(channel))
-except FileNotFoundError:  # channels.txt file does not exist
-    print("Please create a file with the name 'channels.txt' to configure the bot.")
-    exit()
-except ValueError:  # channels.txt contains a channel ID that is not an integer
-    print("Please remove any channel IDs in 'channels.txt' that are not valid channel IDs / integers.")
-    exit()
-
 # Print out the channels that will be translated
 print("Channel(s) that will be translated (The channel ID(s) are shown):")
-for channel in translate_channels:
+for channel in TRANSLATE_CHANNELS:
     print(channel)
-
+print("=" * 60)
 
 if TRANSLATE_LANGUAGE_CODE not in language_codes:  # Check if language code is valid
     print(
@@ -63,7 +56,7 @@ API_POST_HEADERS = {
 }
 API_TRANSLATE_URL = "https://translate.argosopentech.com/translate"
 
-with open("help.txt", "r") as help_file:  # Put the help text into a variable so it doesn't have to be read again
+with open("help.txt", "r") as help_file:  # Put the help text into a variable, so it doesn't have to be read again
     HELP_TEXT = help_file.read()
 
 # Enable the 'messages' intent
@@ -103,14 +96,14 @@ async def shutdown(ctx):
 
 @bot.command(name="translatechannels")
 async def display_translate_channels(ctx):
-    await ctx.send(translate_channels)
+    await ctx.send(TRANSLATE_CHANNELS)
 
 
 @bot.event
 async def on_message(ctx):
     if ctx.author.id == BOT_ID:  # Ignore the bot's own messages
         return
-    if ctx.channel.id in translate_channels:
+    if ctx.channel.id in TRANSLATE_CHANNELS:
         original_message = ctx.content
         if original_message[0:3] == "tr!" or original_message[0:10] == "translate!":
             await bot.process_commands(ctx)
